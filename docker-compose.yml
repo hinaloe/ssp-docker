@@ -1,0 +1,33 @@
+version: "3"
+services:
+  db:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: sspanel
+      MYSQL_DATABASE: sspanel
+      MYSQL_USER: sspanel
+      MYSQL_PASSWORD: sspanel
+    ports: 
+      - 3306:3306
+    volumes:
+      - db:/var/lib/mysql
+  mailcatcher:
+    image: schickling/mailcatcher
+    ports:
+      - 1025:1025
+      - 1080:1080
+  php-fpm:
+    build: ./php-fpm/
+    volumes:
+      - ../SSPanel-Uim-JPN:/var/www/html
+  nginx:
+    image: nginx:latest
+    ports:
+      - 8080:80
+    depends_on:
+      - php-fpm
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ../SSPanel-Uim-JPN:/var/www/html
+volumes:
+  db:
